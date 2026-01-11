@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paiement validé</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .check-circle {
+      width: 80px;
+      height: 80px;
+      background: #2ecc71;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    .check-circle span {
+      font-size: 48px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    h1 {
+      margin: 15px 0 10px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0 0 25px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      background: #ffffff;
+      color: #27ae60;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #ecf0f1;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="success-card">
+    <div class="check-circle">
+      <span>✓</span>
+    </div>
+
+    <h1>Paiement effectué avec succès</h1>
+    <p>Votre réservation a été validée avec succès.</p>
+
+    <a href="profil.html" class="btn">Retour au profil</a>
+  </div>
+
+</body>
+</html>

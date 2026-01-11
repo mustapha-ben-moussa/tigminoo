@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tigminoo - Détails du logement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Tigminoo</a>
+    <div class="navbar-nav">
+      <a class="nav-link" href="index.html">Accueil</a>
+      <a class="nav-link" href="logements.html">Logements</a>
+      <a class="nav-link" href="profil.html">Profil</a>
+      <a class="nav-link" href="connexion.html" id="authLink">Connexion</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5">
+
+  <h1 id="titre" class="mb-4"></h1>
+
+  <img
+    id="image"
+    src="https://via.placeholder.com/800x400?text=Logement"
+    class="img-fluid mb-4 rounded"
+    alt="Logement"
+  >
+
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Informations</h5>
+          <p><strong>Adresse :</strong> <span id="adresse"></span></p>
+          <p><strong>Ville :</strong> <span id="ville"></span></p>
+          <p><strong>Type :</strong> <span id="type"></span></p>
+          <p><strong>Prix par nuit :</strong> <span id="prix"></span> DH</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Réservation</h5>
+          <a id="btnReserver" class="btn btn-success w-100" href="reservation.html">
+            Réserver
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- AVIS -->
+  <h3>Avis des clients</h3>
+  <div id="avis"></div>
+
+</div>
+
+<footer class="bg-dark text-white py-4 text-center mt-5">
+  <p>&copy; 2024 Tigminoo</p>
+</footer>
+
+<script src="auth.js"></script>
+<script>
+// Adapter le lien de connexion si l'utilisateur est connecté
+if (isAuthenticated()) {
+  const authLink = document.getElementById('authLink');
+  authLink.textContent = 'Profil';
+  authLink.href = 'profil.html';
+}
+
+/* ================= ID LOGEMENT ================= */
+const params = new URLSearchParams(window.location.search);
+const id_logement = params.get("id");
+
+if (!id_logement) {
+  alert("Logement introuvable");
+  window.location.href = "logements.html";
+}
+
+/* ================= CHARGER LOGEMENT ================= */
+fetch("http://localhost:3000/logements/" + id_logement)
+  .then(res => {
+    if (!res.ok) throw new Error("Logement introuvable");
+    return res.json();
+  })
+  .then(logement => {
+    document.getElementById("titre").innerText = logement.titre;
+    document.getElementById("adresse").innerText = logement.adresse;
+    document.getElementById("ville").innerText = logement.ville;
+    document.getElementById("type").innerText = logement.type_logement;
+    document.getElementById("prix").innerText = logement.prix_par_nuit;
+
+    // Mettre à jour l'image avec le type
+    document.getElementById("image").src = 
+      `https://via.placeholder.com/800x400?text=${encodeURIComponent(logement.type_logement + ' - ' + logement.ville)}`;
+
+    document.getElementById("btnReserver").href =
+      "reservation.html?id=" + logement.id_logement;
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Erreur lors du chargement du logement");
+    window.location.href = "logements.html";
+  });
+
+/* ================= CHARGER AVIS ================= */
+fetch("http://localhost:3000/avis/logement/" + id_logement)
+  .then(res => res.json())
+  .then(data => {
+    const container = document.getElementById("avis");
+
+    if (data.length === 0) {
+      container.innerHTML = "<p class='text-muted'>Aucun avis pour ce logement.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+    data.forEach(a => {
+      const etoiles = "⭐".repeat(a.note);
+      const date = new Date(a.date_avis).toLocaleDateString('fr-FR');
+      
+      container.innerHTML += `
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="card-subtitle mb-2">${a.nom} ${a.prenom}</h6>
+                <p class="mb-1">${etoiles} ${a.note}/5</p>
+              </div>
+              <small class="text-muted">${date}</small>
+            </div>
+            <p class="card-text mt-2">${a.commentaire}</p>
+          </div>
+        </div>
+      `;
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("avis").innerHTML = 
+      "<p class='text-danger'>Erreur lors du chargement des avis</p>";
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

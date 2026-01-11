@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tigminoo - Profil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Tigminoo</a>
+    <div class="navbar-nav">
+      <a class="nav-link" href="index.html">Accueil</a>
+      <a class="nav-link" href="logements.html">Logements</a>
+      <a class="nav-link active" href="profil.html">Profil</a>
+      <a class="nav-link" href="#" onclick="logout()">Déconnexion</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5">
+
+  <h1 class="mb-4">Mon profil</h1>
+
+  <!-- INFOS UTILISATEUR -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 id="nom"></h5>
+      <p><strong>Email :</strong> <span id="email"></span></p>
+      <p><strong>Type :</strong> <span id="type"></span></p>
+    </div>
+  </div>
+
+  <!-- SECTION HÔTE -->
+  <div id="section-hote" class="mb-5" style="display: none;">
+    <h3>Mes logements</h3>
+
+    <a href="ajouter-logements.html" class="btn btn-primary mb-3">
+      Ajouter un logement
+    </a>
+
+    <div id="mes-logements"></div>
+  </div>
+
+  <!-- SECTION CLIENT -->
+  <div id="section-client" class="mb-5" style="display: none;">
+    <h3>Mes réservations</h3>
+    <div id="mes-reservations"></div>
+  </div>
+
+  <!-- DÉCONNEXION -->
+  <button class="btn btn-danger" onclick="logout()">Déconnexion</button>
+
+</div>
+
+<script src="auth.js"></script>
+<script>
+/* ================= SÉCURITÉ ================= */
+if (!isAuthenticated()) {
+  alert("Veuillez vous connecter");
+  window.location.href = "connexion.html";
+}
+
+const user = getUser();
+
+/* ================= INFOS UTILISATEUR ================= */
+document.getElementById("nom").innerText = user.nom + " " + user.prenom;
+document.getElementById("email").innerText = user.email;
+document.getElementById("type").innerText = user.type === 'hote' ? 'Hôte' : 'Client';
+
+/* ================= HÔTE ================= */
+if (user.type === "hote") {
+  document.getElementById("section-hote").style.display = "block";
+
+  async function chargerLogements() {
+    const container = document.getElementById("mes-logements");
+    showLoading("mes-logements");
+
+    try {
+      const response = await authenticatedFetch(`http://localhost:3000/logements/hote/${user.id}`);
+      
+      if (!response.ok) {
+        throw new Error("Erreur de chargement");
+      }
+
+      const logements = await response.json();
+
+      if (logements.length === 0) {
+        container.innerHTML = "<p>Aucun logement ajouté.</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+      logements.forEach(l => {
+        container.innerHTML += `
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5>${l.titre}</h5>
+              <p><strong>Adresse :</strong> ${l.adresse}</p>
+              <p><strong>Ville :</strong> ${l.ville}</p>
+              <p><strong>Type :</strong> ${l.type_logement}</p>
+              <p><strong>Prix :</strong> ${l.prix_par_nuit} DH / nuit</p>
+            </div>
+          </div>
+        `;
+      });
+    } catch (error) {
+      console.error(error);
+      showError("mes-logements", "Erreur lors du chargement des logements");
+    }
+  }
+
+  chargerLogements();
+}
+
+/* ================= CLIENT ================= */
+if (user.type === "client") {
+  document.getElementById("section-client").style.display = "block";
+
+  async function chargerReservations() {
+    const container = document.getElementById("mes-reservations");
+    showLoading("mes-reservations");
+
+    try {
+      const response = await authenticatedFetch(`http://localhost:3000/reservations/client/${user.id}`);
+      
+      if (!response.ok) {
+        throw new Error("Erreur de chargement");
+      }
+
+      const reservations = await response.json();
+
+      if (reservations.length === 0) {
+        container.innerHTML = "<p>Aucune réservation.</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+      reservations.forEach(r => {
+        const statutClass = r.statut === 'confirmee' ? 'success' : r.statut === 'annulee' ? 'danger' : 'warning';
+        const statutLabel = r.statut === 'confirmee' ? 'Confirmée' : r.statut === 'annulee' ? 'Annulée' : 'En attente';
+        
+        container.innerHTML += `
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5>${r.titre}</h5>
+              <p>
+                Du <strong>${new Date(r.date_debut).toLocaleDateString('fr-FR')}</strong>
+                au <strong>${new Date(r.date_fin).toLocaleDateString('fr-FR')}</strong>
+              </p>
+              <p>Statut : <span class="badge bg-${statutClass}">${statutLabel}</span></p>
+              ${r.statut === 'en_attente' ? `
+                <button class="btn btn-danger btn-sm" onclick="annulerReservation(${r.id_reservation})">
+                  Annuler
+                </button>
+                <a href="paiment.html?id=${r.id_reservation}" class="btn btn-success btn-sm">
+                  Payer
+                </a>
+              ` : ''}
+              ${r.statut === 'confirmee' ? `
+  <a href="avis.html?id=${r.id_logement}" class="btn btn-warning btn-sm">
+    Donner un avis
+  </a>
+` : ''}
+
+            </div>
+          </div>
+        `;
+      });
+    } catch (error) {
+      console.error(error);
+      showError("mes-reservations", "Erreur lors du chargement des réservations");
+    }
+  }
+
+  chargerReservations();
+}
+
+/* ================= ANNULER RÉSERVATION ================= */
+async function annulerReservation(id) {
+  if (!confirm("Voulez-vous vraiment annuler cette réservation ?")) {
+    return;
+  }
+
+  try {
+    const response = await authenticatedFetch(`http://localhost:3000/reservations/${id}/annuler`, {
+      method: "PUT"
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.message);
+      location.reload();
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Erreur lors de l'annulation");
+  }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

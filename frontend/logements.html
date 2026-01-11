@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tigminoo - Logements</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Tigminoo</a>
+      <div class="navbar-nav">
+        <a class="nav-link" href="index.html">Accueil</a>
+        <a class="nav-link active" href="logements.html">Logements</a>
+        <a class="nav-link" href="profil.html">Profil</a>
+        <a class="nav-link" href="connexion.html" id="authLink">Connexion</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENU -->
+  <div class="container py-5">
+    <h1 class="mb-4">Liste des logements</h1>
+
+    <!-- FILTRES -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <select id="ville" class="form-select">
+          <option value="">Toutes les villes</option>
+          <option value="Rabat">Rabat</option>
+          <option value="Casablanca">Casablanca</option>
+          <option value="Marrakech">Marrakech</option>
+          <option value="Fès">Fès</option>
+          <option value="Tanger">Tanger</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select id="type" class="form-select">
+          <option value="">Tous les types</option>
+          <option value="appartement">Appartement</option>
+          <option value="maison">Maison</option>
+          <option value="riad">Riad</option>
+          <option value="villa">Villa</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <input type="number" id="prixMax" class="form-control" placeholder="Prix max (DH)" min="0" />
+      </div>
+
+      <div class="col-md-3">
+        <button id="filterBtn" class="btn btn-primary w-100">Filtrer</button>
+      </div>
+    </div>
+
+    <!-- LOGEMENTS -->
+    <div class="row" id="logements"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-dark text-white py-4 text-center mt-5">
+    <p>&copy; 2024 Tigminoo. Tous droits réservés.</p>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Adapter le lien de connexion si l'utilisateur est connecté
+    if (isAuthenticated()) {
+      const authLink = document.getElementById('authLink');
+      authLink.textContent = 'Profil';
+      authLink.href = 'profil.html';
+    }
+
+    function chargerLogements(url) {
+      const container = document.getElementById("logements");
+      
+      container.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement...</span></div></div>';
+
+      console.log("Chargement depuis:", url); // Debug
+
+      fetch(url)
+        .then((res) => {
+          if (!res.ok) throw new Error("Erreur réseau");
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Logements reçus:", data); // Debug
+          container.innerHTML = "";
+
+          if (data.length === 0) {
+            container.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">Aucun logement trouvé avec ces critères</div></div>';
+            return;
+          }
+
+          data.forEach((l) => {
+            container.innerHTML += `
+              <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                  <img 
+                    src="https://via.placeholder.com/400x250?text=${encodeURIComponent(l.type_logement)}" 
+                    class="card-img-top" 
+                    alt="${l.titre}"
+                  >
+                  <div class="card-body">
+                    <h5 class="card-title">${l.titre}</h5>
+                    <p class="card-text">
+                      <i class="bi bi-geo-alt"></i> <strong>Ville :</strong> ${l.ville}<br>
+                      <i class="bi bi-house"></i> <strong>Type :</strong> ${l.type_logement}<br>
+                      <i class="bi bi-currency-euro"></i> <strong>Prix :</strong> ${l.prix_par_nuit} DH / nuit
+                    </p>
+                  </div>
+                  <div class="card-footer bg-white border-0">
+                    <a href="details.html?id=${l.id_logement}" class="btn btn-primary w-100">
+                      Voir détails
+                    </a>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        })
+        .catch((err) => {
+          console.error("Erreur API :", err);
+          container.innerHTML = '<div class="col-12"><div class="alert alert-danger">Erreur lors du chargement des logements</div></div>';
+        });
+    }
+
+    // Chargement initial
+    chargerLogements("http://localhost:3000/logements");
+
+    // Filtrage
+    document.getElementById("filterBtn").addEventListener("click", () => {
+      const ville = document.getElementById("ville").value;
+      const type = document.getElementById("type").value;
+      const prixMax = document.getElementById("prixMax").value;
+
+      console.log("Filtres:", { ville, type, prixMax }); // Debug
+
+      const params = new URLSearchParams();
+      
+      if (ville) params.append('ville', ville);
+      if (type) params.append('type', type);
+      if (prixMax) params.append('prixMax', prixMax);
+
+      const url = params.toString() 
+        ? `http://localhost:3000/logements?${params.toString()}`
+        : `http://localhost:3000/logements`;
+
+      chargerLogements(url);
+    });
+
+    // Bouton réinitialiser
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'btn btn-secondary w-100 mt-2';
+    resetBtn.textContent = 'Réinitialiser';
+    resetBtn.onclick = () => {
+      document.getElementById("ville").value = "";
+      document.getElementById("type").value = "";
+      document.getElementById("prixMax").value = "";
+      chargerLogements("http://localhost:3000/logements");
+    };
+    document.getElementById("filterBtn").parentElement.appendChild(resetBtn);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
