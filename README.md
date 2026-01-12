@@ -1,17 +1,10 @@
-Voici une version complète et personnalisée de votre fichier `README.md`. J'ai rempli toutes les sections techniques et les exemples de comptes en me basant précisément sur les données et les captures d'écran de votre rapport (technologies, identifiants, base de données).
-
-Vous n'avez plus qu'à copier-coller ce contenu.
-
----
-
 # Tigminoo 🏠✨
 
 **Tigminoo** est une application web moderne dédiée à la gestion de locations de logements de courte durée. Développé dans le cadre de la filière **ASEDS (Advanced Software Engineering for Digital Services)** à l'**INPT (Institut National des Postes et Télécommunications)**, ce projet offre une plateforme centralisée connectant les propriétaires (hôtes) et les voyageurs, avec une expérience utilisateur fluide et sécurisée.
 
 ## 🌟 Fonctionnalités Principales
 
-* 
-**Catalogue Dynamique :** Consultation des logements avec filtrage avancé par ville, type et prix, alimenté par une base de données **MySQL**.
+* **Catalogue Dynamique :** Consultation des logements avec filtrage avancé par ville, type et prix, alimenté par une base de données **MySQL**.
 
 
 * 
@@ -52,12 +45,10 @@ Vous n'avez plus qu'à copier-coller ce contenu.
 
 **Backend :**
 
-* 
-**Node.js** (Environnement d'exécution) 
+* **Node.js** (Environnement d'exécution) 
 
 
-* 
-**Express.js** (Framework serveur) 
+* **Express.js** (Framework serveur) 
 
 
 * 
