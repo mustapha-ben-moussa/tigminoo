@@ -7,24 +7,19 @@
 * **Catalogue Dynamique :** Consultation des logements avec filtrage avancé par ville, type et prix, alimenté par une base de données **MySQL**.
 
 
-* 
-**Système d'Authentification Sécurisé :** Gestion des connexions et inscriptions pour Clients et Hôtes via **JWT (JSON Web Tokens)** et hachage des mots de passe avec **Bcrypt**.
+* **Système d'Authentification Sécurisé :** Gestion des connexions et inscriptions pour Clients et Hôtes via **JWT (JSON Web Tokens)** et hachage des mots de passe avec **Bcrypt**.
 
 
-* 
-**Réservation Intelligente :** Vérification automatique des disponibilités pour éviter les conflits de dates avant confirmation.
+* **Réservation Intelligente :** Vérification automatique des disponibilités pour éviter les conflits de dates avant confirmation.
 
 
-* 
-**Paiement Simulé :** Module de simulation de transaction pour valider le cycle complet d'une réservation.
+* **Paiement Simulé :** Module de simulation de transaction pour valider le cycle complet d'une réservation.
 
 
-* 
-**Gestion des Avis :** Système permettant aux clients de noter et commenter les logements après leur séjour pour renforcer la confiance.
+* **Gestion des Avis :** Système permettant aux clients de noter et commenter les logements après leur séjour pour renforcer la confiance.
 
 
-* 
-**Tableaux de Bord Rôle-Spécifique :** Interfaces distinctes pour les **Hôtes** (ajout de logements, suivi des réservations) et les **Clients** (historique, annulations).
+* **Tableaux de Bord Rôle-Spécifique :** Interfaces distinctes pour les **Hôtes** (ajout de logements, suivi des réservations) et les **Clients** (historique, annulations).
 
 
 
@@ -35,8 +30,7 @@
 * HTML5 & CSS3 (Design responsive) 
 
 
-* 
-**Bootstrap** (Framework CSS) 
+* **Bootstrap** (Framework CSS) 
 
 
 * Vanilla JavaScript & **Fetch API** (Communication asynchrone) 
@@ -51,19 +45,16 @@
 * **Express.js** (Framework serveur) 
 
 
-* 
-**JWT** & **Bcrypt** (Sécurité) 
+* **JWT** & **Bcrypt** (Sécurité) 
 
 
-* 
-**Dotenv** (Variables d'environnement) 
+* **Dotenv** (Variables d'environnement) 
 
 
 
 **Base de Données :**
 
-* 
-**MySQL** (SGBDR) 
+* **MySQL** (SGBDR) 
 
 
 * Bibliothèque **mysql2** 
