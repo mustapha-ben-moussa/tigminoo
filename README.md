@@ -79,7 +79,7 @@ npm install
 
 
 3. **Configuration de la Base de Données :**
-* Créez une base de données MySQL nommée `tigminoo_db`.
+* Créez une base de données MySQL nommée `tigminoo`.
 * Importez le fichier SQL fourni (contenant les tables `client`, `hote`, `logement`, `reservation`, `avis`).
 
 
@@ -116,23 +116,19 @@ Utilisez ces identifiants (basés sur les données du rapport) pour tester les d
 
 **Compte Client (Locataire) :**
 
-* 
-**Email :** `benmoussamustafa94@gmail.com` 
+* **Email :** `benmoussamustafa94@gmail.com` 
 
 
-* 
-**Mot de passe :** `12344321` 
+* **Mot de passe :** `12344321` 
 
 
 
 **Compte Hôte (Propriétaire) :**
 
-* 
-**Email :** `benmoussaelhafid94@gmail.com` 
+* **Email :** `benmoussaelhafid94@gmail.com` 
 
 
-* 
-**Mot de passe :** `13131313` 
+* **Mot de passe :** `13131313` 
 
 
 
